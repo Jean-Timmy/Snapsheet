@@ -6,6 +6,9 @@ import 'package:image_picker/image_picker.dart';
 
 import 'item.dart';
 import 'item_detail_screen.dart';
+import 'product_detection_page.dart';
+import 'gallery_page.dart';
+import 'text_recognition_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -83,17 +86,26 @@ class _HomePageState extends State<HomePage> {
     });
     switch (index) {
       case 0:
-        getImage(ImageSource.camera);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProductDetectionPage()),
+        );
         break;
       case 1:
         // TODO: Implement QR code scanner
         print('QR Scan tapped');
         break;
       case 2:
-        getImage(ImageSource.gallery);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const TextRecognitionPage()),
+        );
         break;
       case 3:
-        getImage(ImageSource.gallery);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GalleryPage(items: _items)),
+        );
         break;
     }
   }
@@ -110,7 +122,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ItemListScreen(items: _items),
+                  builder: (context) => GalleryPage(items: _items),
                 ),
               );
             },
@@ -124,9 +136,10 @@ class _HomePageState extends State<HomePage> {
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
+                      ElevatedButton.icon(
                         onPressed: () => getImage(ImageSource.camera),
-                        child: const Text('Take Photo'),
+                        icon: const Icon(Icons.photo_camera),
+                        label: const Text('Take Photo'),
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
@@ -175,45 +188,6 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-      ),
-    );
-  }
-}
-
-class ItemListScreen extends StatefulWidget {
-  final List<Item> items;
-
-  const ItemListScreen({super.key, required this.items});
-
-  @override
-  State<ItemListScreen> createState() => _ItemListScreenState();
-}
-
-class _ItemListScreenState extends State<ItemListScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cataloged Items'),
-      ),
-      body: ListView.builder(
-        itemCount: widget.items.length,
-        itemBuilder: (context, index) {
-          final item = widget.items[index];
-          return ListTile(
-            leading: Image.file(item.image),
-            title: Text(item.text),
-            onTap: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ItemDetailScreen(item: item),
-                ),
-              );
-              setState(() {});
-            },
-          );
-        },
       ),
     );
   }
